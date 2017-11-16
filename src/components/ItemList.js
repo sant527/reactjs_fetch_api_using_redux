@@ -7,9 +7,9 @@ import Pagination from 'react-js-pagination'
 class ItemList extends Component {
   constructor(props) {
     super(props);
-    this.state = {
+/*    this.state = {
       activePage: 1
-    };
+    };*/
     this.handlePageChange=this.handlePageChange.bind(this)
   }
 
@@ -24,8 +24,8 @@ class ItemList extends Component {
     }*/
 
     handlePageChange(pageNumber) {
-        console.log(`active page is ${pageNumber}`);
-        this.setState({activePage: pageNumber});
+/*        console.log(`active page is ${pageNumber}`);
+        this.setState({activePage: pageNumber});*/
         this.props.fetchData('http://127.0.0.1:8000/api/ingredients/?format=json&page='+pageNumber);
     }    
 
@@ -53,7 +53,7 @@ class ItemList extends Component {
         <h2>List of Ingredients</h2>
         <p>Added list of ingredients</p> 
         <Pagination
-          activePage={this.state.activePage}
+          activePage={this.props.page_number}
           itemsCountPerPage={this.props.page_size}
           totalItemsCount={this.props.count}
           pageRangeDisplayed={5}
@@ -76,7 +76,7 @@ class ItemList extends Component {
               <tbody>
               {this.props.items.map((item,index) => (
                 <tr>
-                    <th> {(index+1)+((this.state.activePage-1)*(this.props.page_size))}</th>
+                    <th> {(index+1)+((this.props.page_number-1)*(this.props.page_size))}</th>
                     <td> {item.id}</td>
                     <td> {item.name}</td>
                     <td> {item.munit}</td>
@@ -90,7 +90,7 @@ class ItemList extends Component {
               </tbody>
             </table>
         <Pagination
-          activePage={this.state.activePage}
+          activePage={this.props.page_number}
           itemsCountPerPage={this.props.page_size}
           totalItemsCount={this.props.count}
           pageRangeDisplayed={5}
@@ -114,7 +114,8 @@ const mapStateToProps = (state) => {
         hasErrored: state.itemsHasErrored,
         isLoading: state.itemsIsLoading,
         count: state.data.count,
-        page_size: state.data.page_size
+        page_size: state.data.page_size,
+        page_number: state.data.page_number
     };
 };
 
