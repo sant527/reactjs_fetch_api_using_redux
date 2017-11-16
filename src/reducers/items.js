@@ -18,11 +18,11 @@ export function itemsIsLoading(state = false, action) {
     }
 }
 
-export function items(state = [], action) {
+export function data(state = {}, action) {
     switch (action.type) {
         case 'ITEMS_FETCH_DATA_SUCCESS':
             console.log(action.items)
-            return action.items
+            return action.data
         default:
             return state;
     }

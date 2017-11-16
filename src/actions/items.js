@@ -16,11 +16,11 @@ export function itemsIsLoading(bool) {
     };
 }
 
-export function itemsFetchDataSuccess(items) {
-    console.log("itemsFetchDataSuccess",items)
+export function itemsFetchDataSuccess(data) {
+    console.log("itemsFetchDataSuccess",data)
     return {
         type: 'ITEMS_FETCH_DATA_SUCCESS',
-        items
+        data
     };
 }
 
@@ -33,7 +33,7 @@ export function itemsFetchData(url) {
                 console.log("inside axiostesting :: response.data :: " + response)
                 console.log(response.data)
                 dispatch(itemsIsLoading(false));
-                dispatch(itemsFetchDataSuccess(response.data.results))
+                dispatch(itemsFetchDataSuccess(response.data))
             },
             error => {
                 console.log("inside axiostesting :: error :: " + error)

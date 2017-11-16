@@ -1,9 +1,9 @@
 import { combineReducers } from 'redux';
-import { items, itemsHasErrored, itemsIsLoading } from './items';
+import { data, itemsHasErrored, itemsIsLoading } from './items';
 import { routerReducer } from 'react-router-redux'
 
 export default combineReducers({
-    items,
+    data,
     itemsHasErrored,
     itemsIsLoading,
     reducer: routerReducer

@@ -2,9 +2,18 @@ import { withRouter } from 'react-router-dom';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { itemsFetchData } from '../actions/items';
-import Pagination from './Pagination'
+import Pagination from 'react-js-pagination'
 
 class ItemList extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      activePage: 1
+    };
+    this.handlePageChange=this.handlePageChange.bind(this)
+  }
+
+
     componentDidMount() {
         console.log("Inside componentDidMount")
         this.props.fetchData('http://127.0.0.1:8000/api/ingredients/?format=json');
@@ -13,6 +22,12 @@ class ItemList extends Component {
 /*    componentDidUpdate(prevProps) {
         this.props.fetchData('http://127.0.0.1:8000/api/ingredients/?format=json');
     }*/
+
+    handlePageChange(pageNumber) {
+        console.log(`active page is ${pageNumber}`);
+        this.setState({activePage: pageNumber});
+        this.props.fetchData('http://127.0.0.1:8000/api/ingredients/?format=json&page='+pageNumber);
+    }    
 
     render() {
         console.log("Inside render")
@@ -37,7 +52,13 @@ class ItemList extends Component {
         <div className="container">
         <h2>List of Ingredients</h2>
         <p>Added list of ingredients</p> 
-        <Pagination />
+        <Pagination
+          activePage={this.state.activePage}
+          itemsCountPerPage={this.props.page_size}
+          totalItemsCount={this.props.count}
+          pageRangeDisplayed={5}
+          onChange={this.handlePageChange}
+        />
             <table className="table table-striped">
               <thead>
                 <tr>
@@ -55,7 +76,7 @@ class ItemList extends Component {
               <tbody>
               {this.props.items.map((item,index) => (
                 <tr>
-                    <th> {index}</th>
+                    <th> {(index+1)+((this.state.activePage-1)*(this.props.page_size))}</th>
                     <td> {item.id}</td>
                     <td> {item.name}</td>
                     <td> {item.munit}</td>
@@ -68,7 +89,13 @@ class ItemList extends Component {
                 ))}
               </tbody>
             </table>
-        <Pagination />
+        <Pagination
+          activePage={this.state.activePage}
+          itemsCountPerPage={this.props.page_size}
+          totalItemsCount={this.props.count}
+          pageRangeDisplayed={5}
+          onChange={this.handlePageChange}
+        />
         </div>
         );
     }
@@ -83,9 +110,11 @@ class ItemList extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        items: state.items,
+        items: state.data.results,
         hasErrored: state.itemsHasErrored,
-        isLoading: state.itemsIsLoading
+        isLoading: state.itemsIsLoading,
+        count: state.data.count,
+        page_size: state.data.page_size
     };
 };
 
