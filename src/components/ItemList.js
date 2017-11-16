@@ -2,6 +2,7 @@ import { withRouter } from 'react-router-dom';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { itemsFetchData } from '../actions/items';
+import Pagination from './Pagination'
 
 class ItemList extends Component {
     componentDidMount() {
@@ -32,9 +33,11 @@ class ItemList extends Component {
         }
 
         return (
+
         <div className="container">
         <h2>List of Ingredients</h2>
         <p>Added list of ingredients</p> 
+        <Pagination />
             <table className="table table-striped">
               <thead>
                 <tr>
@@ -65,6 +68,7 @@ class ItemList extends Component {
                 ))}
               </tbody>
             </table>
+        <Pagination />
         </div>
         );
     }

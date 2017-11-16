@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@orange-marmalade/paginate-this": "^4.0.0-beta-19",
     "axios": "^0.17.0",
     "history": "^4.7.2",
     "react": "^16.0.0",
