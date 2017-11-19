@@ -1,10 +1,13 @@
 import { combineReducers } from 'redux';
-import { data, itemsHasErrored, itemsIsLoading } from './items';
+import { ingredients, itemsHasErrored, itemsIsLoading } from './items';
 import { routerReducer } from 'react-router-redux'
+import { loadingBarReducer } from 'react-redux-loading-bar'
+
 
 export default combineReducers({
-    data,
+    ingredients,
     itemsHasErrored,
     itemsIsLoading,
-    reducer: routerReducer
+    reducer: routerReducer,
+    loadingBar: loadingBarReducer,
 });
