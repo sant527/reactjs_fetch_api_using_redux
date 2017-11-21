@@ -40,6 +40,14 @@ export function itemsascordesc(ascordesc) {
     };
 }
 
+export function itemcolumnfilter(column,text) {
+    return {
+        type: 'ITEMS_FILTERTEXT',
+        column: column,
+        text: text,
+    };
+}
+
 export function itemsFetchData(url) {
     return (dispatch) => {
         dispatch(itemsIsLoading(true));

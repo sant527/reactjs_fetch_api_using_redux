@@ -1,10 +1,10 @@
 import { withRouter } from 'react-router-dom';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { itemsFetchData, itemsFetchDataSortBy } from '../actions/items';
+import { itemsFetchData, itemsFetchDataSortBy, itemcolumnfilter } from '../actions/items';
 import Pagination from 'react-js-pagination'
 import LoadingBar from 'react-redux-loading-bar'
-
+import Time from 'react-time'
 
 
 export class Header extends React.Component {
@@ -26,6 +26,8 @@ class ItemList extends Component {
     this.handlePageChange=this.handlePageChange.bind(this)
     this.handleColumnSort=this.handleColumnSort.bind(this)
     this.handleColumnSortCss=this.handleColumnSortCss.bind(this)
+    this.onChangeHandler=this.onChangeHandler.bind(this)
+
     this.state = {isToggleOn: true};
 
   }
@@ -46,7 +48,7 @@ class ItemList extends Component {
   }
 
   handleColumnSortCss(column){
-    console.log("column----------",column)
+/*    console.log("column----------",column)*/
     var css;
     if (this.props.sort_column === null){
       css = "fa-sort"
@@ -78,6 +80,20 @@ class ItemList extends Component {
 /*        console.log(`active page is ${pageNumber}`);
         this.setState({activePage: pageNumber});*/
         this.props.fetchData('http://127.0.0.1:8000/api/ingredients/?format=json&page='+pageNumber);
+    }
+
+
+    onChangeHandler(column,e){
+      console.log(e.target.value);
+      this.props.itemcolumnfilter(column,e.target.value)
+
+      /*var newArray = this.state.users.filter((d)=>{
+        return d.indexOf(e.target.value) !== -1 
+      });
+      console.log(newArray)
+      this.setState({
+        users:newArray
+      })*/
     }
 
 
@@ -123,6 +139,19 @@ class ItemList extends Component {
                   <th onClick={() => this.handleColumnSort("updated")}><b>Udpated</b> <i className={`fa fa-fw ${this.handleColumnSortCss("updated")}`}></i></th>
                   <th onClick={() => this.handleColumnSort("timestamp")}><b>Created</b> <i className={`fa fa-fw ${this.handleColumnSortCss("timestamp")}`}></i></th>
                 </tr>
+                <tr>
+                  <th></th>
+                  <th><input value={this.state.input} type="text" onChange={(e) => this.onChangeHandler("id",e)}/></th>
+                  <th><input value={this.state.input} type="text" onChange={(e) => this.onChangeHandler("name",e)}/></th>
+                  <th><input value={this.state.input} type="text" onChange={(e) => this.onChangeHandler("munit",e)}/></th>
+                  <th><input value={this.state.input} type="text" onChange={(e) => this.onChangeHandler("rate",e)}/></th>
+                  <th><input value={this.state.input} type="text" onChange={(e) => this.onChangeHandler("typeofingredient",e)}/></th>
+                  <th><input value={this.state.input} type="text" onChange={(e) => this.onChangeHandler("density_kg_per_lt",e)}/></th>
+                  <th><input value={this.state.input} type="text" onChange={(e) => this.onChangeHandler("density_pcs_per_kg",e)}/></th>
+                  <th><input value={this.state.input} type="text" onChange={(e) => this.onChangeHandler("density_pcs_per_lt",e)}/></th>
+                  <th><input value={this.state.input} type="text" onChange={(e) => this.onChangeHandler("updated",e)}/></th>
+                  <th><input value={this.state.input} type="text" onChange={(e) => this.onChangeHandler("timestamp",e)}/></th>
+                </tr>
               </thead>
               <tbody>
               {this.props.items.map((item,index) => (
@@ -136,8 +165,8 @@ class ItemList extends Component {
                     <td> {item.density_kg_per_lt}</td>
                     <td> {item.density_pcs_per_kg}</td>
                     <td> {item.density_pcs_per_lt}</td>
-                    <td> {item.updated}</td>
-                    <td> {item.timestamp}</td>
+                    <td><Time value={item.updated} titleFormat="YYYY/MM/DD HH:mm" relative /></td>
+                    <td><Time value={item.timestamp} titleFormat="YYYY/MM/DD HH:mm" relative /></td>
                 </tr>
                 ))}
               </tbody>
@@ -161,9 +190,28 @@ class ItemList extends Component {
     isLoading: PropTypes.bool.isRequired
 };*/
 
+const getItems = (ingredients,filtertext) => {
+  console.log("filtertext",filtertext)
+  if(filtertext.length > 0){
+    var filteredData = ingredients
+    for( var idx = 0; idx < filtertext.length; ++idx ){
+      filteredData = filteredData.filter(item => {
+        if(item[filtertext[idx].column] !== null){
+           if(item[filtertext[idx].column].toString().indexOf(filtertext[idx].text) !== -1 )
+             return item;
+        }
+      })
+    }
+    return filteredData
+  }
+  else{
+    return ingredients
+  }
+}
+
 const mapStateToProps = (state) => {
     return {
-        items: state.ingredients.data.results,
+        items: getItems(state.ingredients.data.results,state.ingredients.filter.filtertext),
         hasErrored: state.itemsHasErrored,
         isLoading: state.itemsIsLoading,
         count: state.ingredients.data.count,
@@ -177,7 +225,8 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
     return {
         fetchData: (url) => dispatch(itemsFetchData(url)), 
-        fetchDatasortby: (column,ascordesc,url) => dispatch(itemsFetchDataSortBy(column,ascordesc,url))
+        fetchDatasortby: (column,ascordesc,url) => dispatch(itemsFetchDataSortBy(column,ascordesc,url)),
+        itemcolumnfilter: (column,text) => dispatch(itemcolumnfilter(column,text))
 
     };
 };
