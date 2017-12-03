@@ -17,10 +17,35 @@ export function itemsIsLoading(bool) {
     };
 }
 
+export function itemsHasErroredform(bool) {
+    console.log("itemsIsLoading",bool)
+    return {
+        type: 'ITEMS_HAS_ERRORED_FORM',
+        hasErrored: bool
+    };
+}
+
+export function itemsIsLoadingform(bool) {
+    console.log("itemsIsLoading",bool)
+    return {
+        type: 'ITEMS_IS_LOADING_FORM',
+        isLoading: bool
+    };
+}
+
+
 export function itemsFetchDataSuccess(data) {
     console.log("itemsFetchDataSuccess",data)
     return {
         type: 'ITEMS_FETCH_DATA_SUCCESS',
+        data
+    };
+}
+
+export function itemsFetchDataSuccessform(data) {
+    console.log("itemsFetchDataSuccessform",data)
+    return {
+        type: 'ITEMS_FETCH_DATA_SUCCESS_FORM',
         data
     };
 }
@@ -48,6 +73,27 @@ export function itemcolumnfilter(column,text) {
     };
 }
 
+export function itemspagenumber(pagenumber) {
+    return {
+        type: 'ITEMS_PAGENUMBER',
+        pagenumber: pagenumber,
+    };
+}
+
+export function itemsperpage(perpage) {
+    return {
+        type: 'ITEMS_PERPAGE',
+        perpage: perpage,
+    };
+}
+
+export function itemcount(itemcount) {
+    return {
+        type: 'ITEMS_ITEMCOUNT',
+        itemcount: itemcount,
+    };
+}
+
 export function itemsFetchData(url) {
     return (dispatch) => {
         dispatch(itemsIsLoading(true));
@@ -58,11 +104,33 @@ export function itemsFetchData(url) {
                 console.log(response.data)
                 dispatch(itemsIsLoading(false));
                 dispatch(itemsFetchDataSuccess(response.data))
+                dispatch(itemcount(response.data.count))
                 dispatch(hideLoading())
             },
             error => {
                 console.log("inside axiostesting :: error :: " + error)
                 dispatch(itemsHasErrored(true))
+                dispatch(hideLoading())
+                throw(error);
+            });
+    };
+}
+
+export function itemsFetchDataform(url) {
+    return (dispatch) => {
+        dispatch(itemsIsLoading(true));
+        dispatch(showLoading())
+        axios.get(url)
+            .then(response => {
+                console.log("inside axiostesting :: response.data :: " + response)
+                console.log(response.data)
+                dispatch(itemsIsLoadingform(false));
+                dispatch(itemsFetchDataSuccessform(response.data))
+                dispatch(hideLoading())
+            },
+            error => {
+                console.log("inside axiostesting :: error :: " + error)
+                dispatch(itemsHasErroredform(true))
                 dispatch(hideLoading())
                 throw(error);
             });

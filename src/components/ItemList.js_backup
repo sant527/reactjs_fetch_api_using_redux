@@ -122,12 +122,11 @@ const submit = (values,dispatch,props) => {
   console.log("vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv",values)
   axios.post('http://127.0.0.1:8000/api/ingredients/singleform/', values)
   .then(res => {
-    console.log("props",props)
     console.log("props.errors",props.errors)
+    isEmpty(props.errors) ? dispatch(initialize(props.initialValues)) : ''
     dispatch(itemsIsLoadingform(false));
     dispatch(itemsFetchDataSuccessform(res.data))
     dispatch(hideLoading())
-    isEmpty(props.errors) ? dispatch(props.reset()) : ''
     dispatch(itemsFetchData('http://127.0.0.1:8000/api/ingredients/?ordering=-id&format=json'))
   })
   .catch(function (error) {
@@ -394,14 +393,10 @@ class ItemList extends Component {
     this.handleColumnSort=this.handleColumnSort.bind(this)
     this.handleColumnSortCss=this.handleColumnSortCss.bind(this)
     this.onChangeHandler=this.onChangeHandler.bind(this)
-    this.onEditClick=this.onEditClick.bind(this)
     this.perpage = 30
     this.props.perpage(this.perpage)
   }
 
-  onEditClick(id){
-    console.log(id)
-  }
 
 
   handleColumnSort(column){
@@ -471,15 +466,11 @@ class ItemList extends Component {
             return <p>Loading…</p>;
         }
 
-        /*if (isEmpty(this.props.items.filtereditems)) {*/
-/*            return <p>Loading…</p>;*/
-/*        }*/
-
-        if (isEmpty(this.props.form.fields)) {
+        if (isEmpty(this.props.items.filtereditems)) {
             return <p>Loading…</p>;
         }
 
-        if (isEmpty(this.props.form)) {
+        if (isEmpty(this.props.form.fields)) {
             return <p>Loading…</p>;
         }
 
@@ -516,13 +507,13 @@ class ItemList extends Component {
                containerClassName={"pagination"}
                subContainerClassName={"pages pagination"}
                activeClassName={"active"} />
+            <IngredientForm0 form={this.props.items}/>
             <IngredientForm form={this.props.form}/>
             <Header />
-            <table className="table table-sm" style={{"table-layout": "auto"}}>
+            <table className="table table-striped" style={{"table-layout": "auto"}}>
               <thead>
                 <tr>
                   <th>#</th>
-                  <th>Edit</th>
                   <th onClick={() => this.handleColumnSort("id")}><b>Id</b> <i className={`fa fa-fw ${this.handleColumnSortCss("id")}`}></i></th>
                   <th onClick={() => this.handleColumnSort("name")}><b>Name</b> <i className={`fa fa-fw ${this.handleColumnSortCss("name")}`}></i></th>
                   <th onClick={() => this.handleColumnSort("munit")}><b>Munit</b> <i className={`fa fa-fw ${this.handleColumnSortCss("munit")}`}></i></th>
@@ -536,28 +527,26 @@ class ItemList extends Component {
                 </tr>
                 <tr>
                   <th></th>
-                  <th></th>
-                  <th><input  className='form-control' type="text" onChange={(e) => this.onChangeHandler("id",e)}/></th>
-                  <th><input  className='form-control' type="text" onChange={(e) => this.onChangeHandler("name",e)}/></th>
-                  <select className="custom-select form-control" onChange={(e) => this.onChangeHandler("munit",e)} >
+                  <th><input  type="text" onChange={(e) => this.onChangeHandler("id",e)}/></th>
+                  <th><input  type="text" onChange={(e) => this.onChangeHandler("name",e)}/></th>
+                  <select className="custom-select" onChange={(e) => this.onChangeHandler("munit",e)} >
                     {this.props.munits.map(createItem)}
                   </select>
-                  <th><input  className='form-control' type="text" onChange={(e) => this.onChangeHandler("rate",e)}/></th>
-                  <select className="custom-select form-control" onChange={(e) => this.onChangeHandler("typeofingredient",e)} >
+                  <th><input  type="text" onChange={(e) => this.onChangeHandler("rate",e)}/></th>
+                  <select className="custom-select" onChange={(e) => this.onChangeHandler("typeofingredient",e)} >
                     {this.props.typeofingredientlist.map(createItem)}
                   </select>
-                  <th><input  className='form-control' type="text" onChange={(e) => this.onChangeHandler("density_kg_per_lt",e)}/></th>
-                  <th><input  className='form-control' type="text" onChange={(e) => this.onChangeHandler("density_pcs_per_kg",e)}/></th>
-                  <th><input  className='form-control' type="text" onChange={(e) => this.onChangeHandler("density_pcs_per_lt",e)}/></th>
-                  <th><input  className='form-control' type="text" onChange={(e) => this.onChangeHandler("updated",e)}/></th>
-                  <th><input  className='form-control' type="text" onChange={(e) => this.onChangeHandler("timestamp",e)}/></th>
+                  <th><input  type="text" onChange={(e) => this.onChangeHandler("density_kg_per_lt",e)}/></th>
+                  <th><input  type="text" onChange={(e) => this.onChangeHandler("density_pcs_per_kg",e)}/></th>
+                  <th><input  type="text" onChange={(e) => this.onChangeHandler("density_pcs_per_lt",e)}/></th>
+                  <th><input  type="text" onChange={(e) => this.onChangeHandler("updated",e)}/></th>
+                  <th><input  type="text" onChange={(e) => this.onChangeHandler("timestamp",e)}/></th>
                 </tr>
               </thead>
               <tbody>
               {this.props.items.filtereditems.map((item,index) => (
-                [<tr key={index} >
-                    <td> {(index+1)+((this.props.page_number-1)*(this.props.page_size))}</td>
-                    <td><button onClick={() => this.onEditClick(item.id)} type="button" className="btn btn-primary btn-sm">Edit</button></td>
+                <tr key={index} >
+                    <th> {(index+1)+((this.props.page_number-1)*(this.props.page_size))}</th>
                     <td> {item.id}</td>
                     <td> {item.name}</td>
                     <td> {item.munit}</td>
@@ -568,7 +557,7 @@ class ItemList extends Component {
                     <td> {item.density_pcs_per_lt}</td>
                     <td><Time value={item.updated} titleFormat="YYYY/MM/DD HH:mm" relative /></td>
                     <td><Time value={item.timestamp} titleFormat="YYYY/MM/DD HH:mm" relative /></td>
-                </tr>]
+                </tr>
                 ))}
               </tbody>
             </table>
@@ -605,35 +594,30 @@ class ItemList extends Component {
 const getItems = (ingredients,filtertext,pagenumber,per_page) => {
   console.log("filtertext",filtertext)
   console.log("pagenumber",pagenumber)
-  if(typeof ingredients === "undefined")
+  var filteredData = ingredients
+  if(filtertext.length > 0){
+    for( var idx = 0; idx < filtertext.length; ++idx ){
+      filteredData = filteredData.filter(item => {
+        if(item[filtertext[idx].column] !== null){
+           if(item[filtertext[idx].column].toString().indexOf(filtertext[idx].text) !== -1 )
+             return item;
+        }
+      })
+    }
+  }
+  var start = (pagenumber*per_page);
+  var end = start+per_page;
+  console.log(start,end)
+  if(typeof filteredData === "undefined")
     return { 
       filtereditems: [],
       totalcount: 0
     }
-  else{
-    var filteredData = ingredients
-    if(filtertext.length > 0){
-      for( var idx = 0; idx < filtertext.length; ++idx ){
-        filteredData = filteredData.filter(item => {
-          if(item[filtertext[idx].column] !== null){
-             if(item[filtertext[idx].column].toString().indexOf(filtertext[idx].text) !== -1 )
-               return item;
-          }
-        })
-      }
-      var start = (pagenumber*per_page);
-      var end = start+per_page;
-      console.log(start,end)
-      console.log({
-        filtereditems: filteredData.slice(start,end),
-        totalcount: filteredData.length
-    })
-    }
+  else
     return {
-        filtereditems: filteredData.slice(start,end),
-        totalcount: filteredData.length
+      filtereditems: filteredData.slice(start,end),
+      totalcount: filteredData.length
     }
-  }
 }
 
 const getMunit = (munit) => {

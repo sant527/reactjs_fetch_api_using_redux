@@ -20,9 +20,40 @@ export function itemsIsLoading(state = false, action) {
     }
 }
 
+export function itemsHasErroredform(state = false, action) {
+    switch (action.type) {
+        case 'ITEMS_HAS_ERRORED_FORM':
+            return action.hasErrored;
+
+        default:
+            return state;
+    }
+}
+
+export function itemsIsLoadingform(state = false, action) {
+    switch (action.type) {
+        case 'ITEMS_IS_LOADING_FORM':
+            return action.isLoading;
+
+        default:
+            return state;
+    }
+}
+
+
 export function data(state = {}, action) {
     switch (action.type) {
         case 'ITEMS_FETCH_DATA_SUCCESS':
+            console.log(action.items)
+            return action.data
+        default:
+            return state;
+    }
+}
+
+export function form(state = {}, action) {
+    switch (action.type) {
+        case 'ITEMS_FETCH_DATA_SUCCESS_FORM':
             console.log(action.items)
             return action.data
         default:
@@ -62,6 +93,37 @@ export function filterstatus(state = false, action) {
             return state;
     }
 }
+
+export function pagenumber(state = 0, action) {
+    switch (action.type) {
+        case 'ITEMS_PAGENUMBER':
+            console.log(action.pagenumber)
+            return action.pagenumber
+        default:
+            return state;
+    }
+}
+
+export function perpage(state = 0, action) {
+    switch (action.type) {
+        case 'ITEMS_PERPAGE':
+            console.log(action.pagenumber)
+            return action.perpage
+        default:
+            return state;
+    }
+}
+
+export function itemcount(state = 0, action) {
+    switch (action.type) {
+        case 'ITEMS_ITEMCOUNT':
+            console.log(action.itemcount)
+            return action.itemcount
+        default:
+            return state;
+    }
+}
+
 
 
 export function filtertext(state = [], action) {
@@ -114,8 +176,20 @@ export const sortBy = combineReducers({
     ascordesc,
 })
 
+export const formcomb = combineReducers({
+    form,
+    itemsHasErroredform,
+    itemsIsLoadingform
+})
+
 export const ingredients = combineReducers({
+    formcomb,
     data,
     sortBy,
-    filter
+    filter,
+    pagenumber,
+    perpage,
+    itemcount,
+    itemsHasErrored,
+    itemsIsLoading
 })
