@@ -313,7 +313,7 @@ let IngredientForm = props => {
         <Field name="density_pcs_per_lt" component={RenderInputDecimal} field={form.fields.density_pcs_per_lt}  is_bound={form.is_bound} errors={typeof form.errors !== "undefined" ? typeof form.errors.density_pcs_per_lt !== "undefined" ? form.errors.density_pcs_per_lt : null : null}/>
       </div>
     </div>
-      <button type="submit">Submit</button>
+      <button type="submit" className="btn btn-primary">Submit</button>
     </form>
   )
 }
@@ -397,6 +397,8 @@ class ItemList extends Component {
     this.onEditClick=this.onEditClick.bind(this)
     this.perpage = 30
     this.props.perpage(this.perpage)
+    console.log("5555555555555555555555555",this.props.items.totalcount)
+    console.log("88888888888888888888888888",this.props.perpage2)
   }
 
   onEditClick(id){
@@ -441,7 +443,8 @@ class ItemList extends Component {
 
   componentDidMount() {
       console.log("Inside componentDidMount")
-      this.props.fetchData('http://127.0.0.1:8000/api/ingredients/?format=json');
+      this.props.fetchDatasortby("name","","http://127.0.0.1:8000/api/ingredients?ordering=name")
+      //this.props.fetchData('http://127.0.0.1:8000/api/ingredients?ordering=name');
       this.props.fetchDataform('http://localhost:8000/api/ingredients/singleform')
   }
 
@@ -471,7 +474,7 @@ class ItemList extends Component {
             return <p>Loading…</p>;
         }
 
-        /*if (isEmpty(this.props.items.filtereditems)) {*/
+/*        if (isEmpty(this.props.items.filtereditems)) {*/
 /*            return <p>Loading…</p>;*/
 /*        }*/
 
@@ -514,7 +517,6 @@ class ItemList extends Component {
                pageRangeDisplayed={3}
                onPageChange={this.handlePageChange}
                containerClassName={"pagination"}
-               subContainerClassName={"page"}
                pageClassName={"page-item"}
                pageLinkClassName={"page-link"}
                previousClassName={"page-item"}
@@ -523,40 +525,43 @@ class ItemList extends Component {
                nextLinkClassName={"page-link"}
                activeClassName={"active"} />
             <IngredientForm form={this.props.form}/>
+            <br></br>
             <Header />
             <table className="table table-sm" style={{"table-layout": "auto"}}>
               <thead>
                 <tr>
                   <th>#</th>
                   <th>Edit</th>
-                  <th onClick={() => this.handleColumnSort("id")}><b>Id</b> <i className={`fa fa-fw ${this.handleColumnSortCss("id")}`}></i></th>
-                  <th onClick={() => this.handleColumnSort("name")}><b>Name</b> <i className={`fa fa-fw ${this.handleColumnSortCss("name")}`}></i></th>
-                  <th onClick={() => this.handleColumnSort("munit")}><b>Munit</b> <i className={`fa fa-fw ${this.handleColumnSortCss("munit")}`}></i></th>
-                  <th onClick={() => this.handleColumnSort("rate")}><b>Rate</b> <i className={`fa fa-fw ${this.handleColumnSortCss("rate")}`}></i></th>
-                  <th onClick={() => this.handleColumnSort("typeofingredient")}><b>Ingr. Type</b> <i className={`fa fa-fw ${this.handleColumnSortCss("typeofingredient")}`}></i></th>
-                  <th onClick={() => this.handleColumnSort("density_kg_per_lt")}><b>Kg/Lt</b> <i className={`fa fa-fw ${this.handleColumnSortCss("density_kg_per_lt")}`}></i></th>
-                  <th onClick={() => this.handleColumnSort("density_pcs_per_kg")}><b>Pcs/Kg</b> <i className={`fa fa-fw ${this.handleColumnSortCss("density_pcs_per_kg")}`}></i></th>
-                  <th onClick={() => this.handleColumnSort("density_pcs_per_lt")}><b>Pcs/Lt</b> <i className={`fa fa-fw ${this.handleColumnSortCss("density_pcs_per_lt")}`}></i></th>
-                  <th onClick={() => this.handleColumnSort("updated")}><b>Udpated</b> <i className={`fa fa-fw ${this.handleColumnSortCss("updated")}`}></i></th>
-                  <th onClick={() => this.handleColumnSort("timestamp")}><b>Created</b> <i className={`fa fa-fw ${this.handleColumnSortCss("timestamp")}`}></i></th>
+                  <th className="text-center" style={{"white-space": "nowrap"}} onClick={() => this.handleColumnSort("id")}><b>Id</b> <i className={`fa fa-fw ${this.handleColumnSortCss("id")}`}></i></th>
+                  <th style={{"white-space": "nowrap"}} onClick={() => this.handleColumnSort("name")}><b>Name</b> <i className={`fa fa-fw ${this.handleColumnSortCss("name")}`}></i></th>
+                  <th style={{"white-space": "nowrap"}} onClick={() => this.handleColumnSort("munit")}><b>Munit</b> <i className={`fa fa-fw ${this.handleColumnSortCss("munit")}`}></i></th>
+                  <th style={{"white-space": "nowrap"}} onClick={() => this.handleColumnSort("rate")}><b>Rate</b> <i className={`fa fa-fw ${this.handleColumnSortCss("rate")}`}></i></th>
+                  <th style={{"white-space": "nowrap"}} onClick={() => this.handleColumnSort("typeofingredient")}><b>Ingr. Type</b> <i className={`fa fa-fw ${this.handleColumnSortCss("typeofingredient")}`}></i></th>
+                  <th style={{"white-space": "nowrap"}} onClick={() => this.handleColumnSort("density_kg_per_lt")}><b>Kg/Lt</b> <i className={`fa fa-fw ${this.handleColumnSortCss("density_kg_per_lt")}`}></i></th>
+                  <th style={{"white-space": "nowrap"}} onClick={() => this.handleColumnSort("density_pcs_per_kg")}><b>Pcs/Kg</b> <i className={`fa fa-fw ${this.handleColumnSortCss("density_pcs_per_kg")}`}></i></th>
+                  <th style={{"white-space": "nowrap"}} onClick={() => this.handleColumnSort("density_pcs_per_lt")}><b>Pcs/Lt</b> <i className={`fa fa-fw ${this.handleColumnSortCss("density_pcs_per_lt")}`}></i></th>
+                  <th style={{"white-space": "nowrap"}} onClick={() => this.handleColumnSort("updated")}><b>Udpated</b> <i className={`fa fa-fw ${this.handleColumnSortCss("updated")}`}></i></th>
+                  <th style={{"white-space": "nowrap"}} onClick={() => this.handleColumnSort("timestamp")}><b>Created</b> <i className={`fa fa-fw ${this.handleColumnSortCss("timestamp")}`}></i></th>
                 </tr>
                 <tr>
-                  <th></th>
-                  <th></th>
-                  <th><input  className='form-control' type="text" onChange={(e) => this.onChangeHandler("id",e)}/></th>
-                  <th><input  className='form-control' type="text" onChange={(e) => this.onChangeHandler("name",e)}/></th>
-                  <select className="custom-select form-control" onChange={(e) => this.onChangeHandler("munit",e)} >
+                  <td></td>
+                  <td></td>
+                  <td><input  className='form-control' type="text" onChange={(e) => this.onChangeHandler("id",e)}/></td>
+                  <td><input  className='form-control' type="text" onChange={(e) => this.onChangeHandler("name",e)}/></td>
+                  <td><select className="custom-select form-control" onChange={(e) => this.onChangeHandler("munit",e)} >
                     {this.props.munits.map(createItem)}
                   </select>
-                  <th><input  className='form-control' type="text" onChange={(e) => this.onChangeHandler("rate",e)}/></th>
-                  <select className="custom-select form-control" onChange={(e) => this.onChangeHandler("typeofingredient",e)} >
+                  </td>
+                  <td><input  className='form-control' type="text" onChange={(e) => this.onChangeHandler("rate",e)}/></td>
+                  <td><select className="custom-select form-control" onChange={(e) => this.onChangeHandler("typeofingredient",e)} >
                     {this.props.typeofingredientlist.map(createItem)}
                   </select>
-                  <th><input  className='form-control' type="text" onChange={(e) => this.onChangeHandler("density_kg_per_lt",e)}/></th>
-                  <th><input  className='form-control' type="text" onChange={(e) => this.onChangeHandler("density_pcs_per_kg",e)}/></th>
-                  <th><input  className='form-control' type="text" onChange={(e) => this.onChangeHandler("density_pcs_per_lt",e)}/></th>
-                  <th><input  className='form-control' type="text" onChange={(e) => this.onChangeHandler("updated",e)}/></th>
-                  <th><input  className='form-control' type="text" onChange={(e) => this.onChangeHandler("timestamp",e)}/></th>
+                  </td>
+                  <td><input  className='form-control' type="text" onChange={(e) => this.onChangeHandler("density_kg_per_lt",e)}/></td>
+                  <td><input  className='form-control' type="text" onChange={(e) => this.onChangeHandler("density_pcs_per_kg",e)}/></td>
+                  <td><input  className='form-control' type="text" onChange={(e) => this.onChangeHandler("density_pcs_per_lt",e)}/></td>
+                  <td><input  className='form-control' type="text" onChange={(e) => this.onChangeHandler("updated",e)}/></td>
+                  <td><input  className='form-control' type="text" onChange={(e) => this.onChangeHandler("timestamp",e)}/></td>
                 </tr>
               </thead>
               <tbody>
@@ -564,11 +569,11 @@ class ItemList extends Component {
                 [<tr key={index} >
                     <td> {(index+1)+((this.props.page_number-1)*(this.props.page_size))}</td>
                     <td><button onClick={() => this.onEditClick(item.id)} type="button" className="btn btn-primary btn-sm">Edit</button></td>
-                    <td> {item.id}</td>
+                    <td align="center"> {item.id}</td>
                     <td> {item.name}</td>
-                    <td> {item.munit}</td>
+                    <td align="center"> {item.munit}</td>
                     <td> {item.rate}</td>
-                    <td> {item.typeofingredient}</td>
+                    <td align="center" > {item.typeofingredient}</td>
                     <td> {item.density_kg_per_lt}</td>
                     <td> {item.density_pcs_per_kg}</td>
                     <td> {item.density_pcs_per_lt}</td>
@@ -578,7 +583,7 @@ class ItemList extends Component {
                 ))}
               </tbody>
             </table>
-        <ReactPaginate previousLabel={"previous"}
+        {/*<ReactPaginate previousLabel={"previous"}
                nextLabel={"next"}
                breakLabel={<a href="">...</a>}
                breakClassName={"break-me"}
@@ -588,7 +593,7 @@ class ItemList extends Component {
                onPageChange={this.handlePageChange}
                containerClassName={"pagination"}
                subContainerClassName={"pages pagination"}
-               activeClassName={"active"} />
+               activeClassName={"active"} />*/}
        {/* <Pagination
           activePage={this.props.page_number}
           itemsCountPerPage={this.props.page_size}
