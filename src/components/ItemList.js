@@ -507,14 +507,20 @@ class ItemList extends Component {
 */}
         <ReactPaginate previousLabel={"previous"}
                nextLabel={"next"}
-               breakLabel={<a href="">...</a>}
-               breakClassName={"break-me"}
+               breakLabel={<a class="page-link" href="">...</a>}
+               breakClassName={"page-item"}
                pageCount={this.props.items.totalcount/this.props.perpage2}
                marginPagesDisplayed={3}
                pageRangeDisplayed={3}
                onPageChange={this.handlePageChange}
                containerClassName={"pagination"}
-               subContainerClassName={"pages pagination"}
+               subContainerClassName={"page"}
+               pageClassName={"page-item"}
+               pageLinkClassName={"page-link"}
+               previousClassName={"page-item"}
+               nextClassName={"page-item"}
+               previousLinkClassName={"page-link"}
+               nextLinkClassName={"page-link"}
                activeClassName={"active"} />
             <IngredientForm form={this.props.form}/>
             <Header />
@@ -605,35 +611,30 @@ class ItemList extends Component {
 const getItems = (ingredients,filtertext,pagenumber,per_page) => {
   console.log("filtertext",filtertext)
   console.log("pagenumber",pagenumber)
-  if(typeof ingredients === "undefined")
+  var filteredData = ingredients
+  if(filtertext.length > 0){
+    for( var idx = 0; idx < filtertext.length; ++idx ){
+      filteredData = filteredData.filter(item => {
+        if(item[filtertext[idx].column] !== null){
+           if(item[filtertext[idx].column].toString().indexOf(filtertext[idx].text) !== -1 )
+             return item;
+        }
+      })
+    }
+  }
+  var start = (pagenumber*per_page);
+  var end = start+per_page;
+  console.log(start,end)
+  if(typeof filteredData === "undefined")
     return { 
       filtereditems: [],
       totalcount: 0
     }
-  else{
-    var filteredData = ingredients
-    if(filtertext.length > 0){
-      for( var idx = 0; idx < filtertext.length; ++idx ){
-        filteredData = filteredData.filter(item => {
-          if(item[filtertext[idx].column] !== null){
-             if(item[filtertext[idx].column].toString().indexOf(filtertext[idx].text) !== -1 )
-               return item;
-          }
-        })
-      }
-      var start = (pagenumber*per_page);
-      var end = start+per_page;
-      console.log(start,end)
-      console.log({
-        filtereditems: filteredData.slice(start,end),
-        totalcount: filteredData.length
-    })
-    }
+  else
     return {
-        filtereditems: filteredData.slice(start,end),
-        totalcount: filteredData.length
+      filtereditems: filteredData.slice(start,end),
+      totalcount: filteredData.length
     }
-  }
 }
 
 const getMunit = (munit) => {

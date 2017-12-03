@@ -37,6 +37,10 @@ const configureStore = () => {
     )
   )
 
+/*  return createStore(reducers,
+        applyMiddleware(...middlewares)
+  )*/
+
 };
 
 export default configureStore;
